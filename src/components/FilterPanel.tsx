@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 
 import {
   brands,
@@ -21,7 +22,7 @@ type FilterPanelProps = {
   };
 };
 
-function buildHref(active: FilterPanelProps["active"], key: string, value?: string) {
+function buildHref(active: FilterPanelProps["active"], key: string, value?: string): Route {
   const params = new URLSearchParams();
   const next = { ...active, [key]: value };
 
@@ -32,7 +33,7 @@ function buildHref(active: FilterPanelProps["active"], key: string, value?: stri
   });
 
   const query = params.toString();
-  return query ? `/browse?${query}` : "/browse";
+  return (query ? `/browse?${query}` : "/browse") as Route;
 }
 
 export function FilterPanel({ active }: FilterPanelProps) {

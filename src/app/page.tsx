@@ -19,7 +19,7 @@ export default function HomePage() {
           </p>
           <div className="hero-actions">
             <Link className="button" href="/browse">
-              Browse the starter database
+              Browse imported paints
             </Link>
             <Link className="button-secondary" href="/reference">
               Learn the terminology
@@ -41,11 +41,11 @@ export default function HomePage() {
       <section className="content-section">
         <div className="page-header">
           <div>
-            <div className="eyebrow">Starter records</div>
-            <h2>Example paint entries</h2>
+            <div className="eyebrow">Imported records</div>
+            <h2>Example paint entries from the workbook</h2>
           </div>
           <Link className="text-link" href="/browse">
-            See all starter paints
+            See all imported paints
           </Link>
         </div>
         <div className="results-grid">
@@ -76,7 +76,7 @@ export default function HomePage() {
             <div className="eyebrow">Expandable</div>
             <h3>Ready for more brands and mediums</h3>
             <p className="muted">
-              Current starter product lines include {productLines.map((line) => line.name).join(", ")}, and the schema is ready for broader ingestion.
+              Current imported product lines include {productLines.map((line) => line.name).filter(Boolean).join(", ")}, and the schema is ready for broader ingestion.
             </p>
           </article>
         </div>

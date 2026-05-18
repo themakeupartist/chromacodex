@@ -10,24 +10,25 @@ export function PaintCard({ paint }: PaintCardProps) {
   const brand = getBrandById(paint.brandId);
   const medium = getMediumById(paint.mediumId);
   const line = getProductLineById(paint.productLineId);
+  const pigmentLabel = paint.pigmentCodes.length > 0 ? paint.pigmentCodes.join(", ") : "Not yet linked";
 
   return (
     <article className="paint-card">
       <div className="paint-card__swatch" style={{ background: rgbToCss(paint.measurement?.rgb ?? null) }} />
       <div className="paint-card__content">
-        <div className="eyebrow">{brand?.name}</div>
-        <h3>{paint.name}</h3>
+        <div className="eyebrow">{brand?.name ?? "Unknown brand"}</div>
+        <h3>{paint.name ?? "Unnamed paint"}</h3>
         <p className="muted">
-          {medium?.name} · {line?.name}
+          {medium?.name ?? "Unknown medium"} · {line?.name ?? "Unknown product line"}
         </p>
         <dl className="inline-meta">
           <div>
             <dt>Pigment</dt>
-            <dd>{paint.pigmentCodes.join(", ")}</dd>
+            <dd>{pigmentLabel}</dd>
           </div>
           <div>
             <dt>Family</dt>
-            <dd>{paint.colorFamily}</dd>
+            <dd>{paint.colorFamily ?? "Unknown"}</dd>
           </div>
           <div>
             <dt>Opacity</dt>

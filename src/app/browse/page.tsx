@@ -35,7 +35,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           <div className="detail-card">
             <div className="eyebrow">Current result set</div>
             <h2>{results.length} paint records</h2>
-            <p className="muted">This starter dataset is still curated and workbook-derived. As the import pipeline expands, the browse view will fill out automatically.</p>
+            <p className="muted">These results come from the normalized workbook import, so the browse view now reflects the local generated dataset instead of a tiny hand-curated sample.</p>
           </div>
 
           {results.map((paint) => (
@@ -45,7 +45,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           {results.length === 0 ? (
             <div className="callout">
               <h3>No paints matched those filters.</h3>
-              <p className="muted">That usually means the starter dataset is still small. Clear the filters and keep broadening the import as new brands are normalized.</p>
+              <p className="muted">Try clearing a few filters first. Some records are still incomplete, and the import will keep broadening as more brands and manufacturer sources are normalized.</p>
             </div>
           ) : null}
         </section>

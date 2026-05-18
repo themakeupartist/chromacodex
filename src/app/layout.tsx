@@ -27,7 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </header>
           {children}
           <footer className="footer-note">
-            ChromaCodex v1 starts with a curated workbook-derived dataset and is designed to grow into a full artist paint database.
+            ChromaCodex v1 is powered by a workbook-derived import pipeline and is designed to keep growing into a fuller artist paint database.
           </footer>
         </div>
       </body>

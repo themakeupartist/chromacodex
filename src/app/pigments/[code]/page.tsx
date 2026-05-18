@@ -18,7 +18,7 @@ export default async function PigmentDetailPage({ params }: PigmentDetailPagePro
     notFound();
   }
 
-  const relatedPaints = getPaintsForPigment(pigment.code);
+  const relatedPaints = pigment.code ? getPaintsForPigment(pigment.code) : [];
 
   return (
     <main className="page">
@@ -28,7 +28,7 @@ export default async function PigmentDetailPage({ params }: PigmentDetailPagePro
 
       <section className="content-section">
         <div className="eyebrow">Pigment record</div>
-        <h1>{pigment.code}</h1>
+        <h1>{pigment.code ?? "Unknown pigment code"}</h1>
         <p className="lede">{pigment.notes ?? "Pigment notes will expand as manufacturer and pigment reference data grows."}</p>
       </section>
 
@@ -52,7 +52,7 @@ export default async function PigmentDetailPage({ params }: PigmentDetailPagePro
         </article>
         <article className="detail-card">
           <h2>Used in these paints</h2>
-          <p className="muted">{relatedPaints.length} starter paint records currently reference this pigment code.</p>
+          <p className="muted">{relatedPaints.length} imported paint records currently reference this pigment code.</p>
         </article>
       </section>
 

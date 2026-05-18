@@ -14,10 +14,10 @@ ChromaCodex is a web-first color intelligence project for artists. The first rel
 This repository currently includes:
 
 - A manual Next.js scaffold in `src/`
-- Curated starter data derived from the workbook
+- A local app data layer in `src/data/chromacodex.ts` backed by generated workbook JSON
 - A Supabase/Postgres schema in `supabase/schema.sql`
-- A seed script outline in `supabase/seed.sql`
-- A workbook import scaffold in `scripts/import-workbook.mjs`
+- A generated Supabase seed file in `supabase/seed.sql`
+- A workbook import pipeline in `scripts/import-workbook.mjs` that emits summary, normalized JSON, and seed SQL
 - Reference docs in `docs/`
 
 ## Local development
@@ -41,8 +41,8 @@ npm run dev
 1. Install dependencies and run the site locally
 2. Create the GitHub repository and add the remote
 3. Stand up Supabase and apply the schema
-4. Expand the workbook import into a full normalized loader
-5. Replace the curated static data with database queries
+4. Apply the generated schema and seed to Supabase/Postgres
+5. Replace the local JSON-backed helpers with database queries
 
 ## Source workbook
 
@@ -51,3 +51,19 @@ The current source workbook lives at:
 - `./ChromaCodex-Database-v15.xlsx`
 
 It is being used as the source blueprint for data modeling and import logic, not as the long-term application datastore.
+
+## Current repo reality
+
+Workbook-backed right now:
+
+- The Next.js browse and detail pages read from `src/data/chromacodex.ts`
+- `src/data/chromacodex.ts` reads `src/data/generated/workbook-normalized.json`
+- `scripts/import-workbook.mjs` generates workbook summary JSON, normalized JSON, and `supabase/seed.sql`
+- `supabase/seed.sql` is now generated from the normalized workbook export instead of being a tiny manual starter seed
+
+Still scaffolded or transitional:
+
+- The app is still reading local generated JSON rather than querying Supabase directly
+- `supabase/schema.sql` models the target relational structure, but no runtime database client is wired into the app yet
+- Static reference content in `src/app/reference/page.tsx` is still hand-authored copy
+- Duplicate canonical paint keys and incomplete pigment records are detected during import and currently handled during seeding rather than fully resolved in-source

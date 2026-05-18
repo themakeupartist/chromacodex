@@ -31,10 +31,10 @@ export default async function PaintDetailPage({ params }: PaintDetailPageProps) 
         <section className="detail-card detail-hero">
           <div className="detail-swatch" style={{ background: rgbToCss(paint.measurement?.rgb ?? null) }} />
           <div className="detail-body">
-            <div className="eyebrow">{brand?.name}</div>
-            <h1>{paint.name}</h1>
+            <div className="eyebrow">{brand?.name ?? "Unknown brand"}</div>
+            <h1>{paint.name ?? "Unnamed paint"}</h1>
             <p className="lede">
-              {medium?.name} · {productLine?.name} · {paint.verificationStatus}
+              {medium?.name ?? "Unknown medium"} · {productLine?.name ?? "Unknown product line"} · {paint.verificationStatus ?? "Unknown status"}
             </p>
             <p className="muted">{paint.notes}</p>
           </div>
@@ -54,11 +54,11 @@ export default async function PaintDetailPage({ params }: PaintDetailPageProps) 
               </div>
               <div>
                 <dt>Color family</dt>
-                <dd>{paint.colorFamily}</dd>
+                <dd>{paint.colorFamily ?? "Unknown"}</dd>
               </div>
               <div>
                 <dt>Pigment codes</dt>
-                <dd>{paint.pigmentCodes.join(", ")}</dd>
+                <dd>{paint.pigmentCodes.length > 0 ? paint.pigmentCodes.join(", ") : "Not yet linked"}</dd>
               </div>
               <div>
                 <dt>Single pigment</dt>

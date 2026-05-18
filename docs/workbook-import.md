@@ -32,6 +32,12 @@ Move from workbook-managed relational logic to database-managed relational data 
 - Load paint-to-pigment relationships
 - Load behavior and measurement rows
 
+Current repo status:
+
+- normalized workbook export is implemented
+- local app reads the generated workbook JSON
+- generated seed SQL is implemented for Supabase/Postgres refreshes
+
 ### Phase 3
 - Add integrity checks
 - flag incomplete pigment codes
@@ -54,5 +60,25 @@ The repository includes a starter import script at `scripts/import-workbook.mjs`
 - reads workbook metadata and shared strings
 - extracts row values from selected source tabs
 - writes a summary JSON file to `src/data/generated/`
+- writes a normalized workbook export to `src/data/generated/workbook-normalized.json`
+- writes generated seed SQL to `supabase/seed.sql`
+- derives paint pigment counts and single-pigment flags from the join table
+- emits integrity checks for duplicate canonical keys, suspicious pigment codes, and missing foreign-key targets
 
-The next implementation step is to transform those extracted rows into typed normalized records that can be inserted into Postgres.
+## Seed generation notes
+
+The generated `supabase/seed.sql` currently performs a full refresh of the normalized tables instead of row-by-row upserts.
+
+That choice is deliberate for now because:
+
+- `paint_behavior`, `measurements`, and `paint_pigments` do not yet preserve workbook IDs in the database schema
+- `measurements` does not yet have a natural unique constraint suitable for clean upserts
+- the workbook currently contains duplicate `canonical_key` paint rows that must be resolved before a pure upsert path is trustworthy
+
+During seed generation:
+
+- records with broken foreign-key references would fail the generation step
+- duplicate paint canonical keys are reduced to one seedable paint row per key so the current schema can load successfully
+- the skipped duplicate paint IDs are documented in the generated SQL comments
+
+The next implementation step after this is to wire the Next.js app to query Supabase directly instead of reading the local generated JSON snapshot.

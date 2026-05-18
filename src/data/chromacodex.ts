@@ -1,56 +1,58 @@
-export type VerificationStatus = "Verified" | "Needs Review" | "Imported";
+import workbookData from "@/data/generated/workbook-normalized.json";
+
+export type VerificationStatus = "Verified" | "Needs Review" | "Imported" | "Not Provided" | "Incomplete / Needs Review";
 
 export type Source = {
   id: string;
   name: string;
-  type: string;
-  url: string;
-  reliabilityRole: string;
-  notes: string;
+  type: string | null;
+  url: string | null;
+  reliabilityRole: string | null;
+  notes: string | null;
 };
 
 export type Brand = {
   id: string;
-  name: string;
+  name: string | null;
   slug: string;
-  manufacturer: string;
+  manufacturer: string | null;
   synonyms: string[];
-  notes: string;
+  notes: string | null;
 };
 
 export type Medium = {
   id: string;
-  name: string;
+  name: string | null;
   slug: string;
-  parentCategory: string;
-  coreBehaviorNotes: string;
+  parentCategory: string | null;
+  coreBehaviorNotes: string | null;
 };
 
 export type ProductLine = {
   id: string;
-  brandId: string;
-  mediumId: string;
-  name: string;
+  brandId: string | null;
+  mediumId: string | null;
+  name: string | null;
   slug: string;
-  formulationFamily: string;
-  productLineType: string;
+  formulationFamily: string | null;
+  productLineType: string | null;
   viscosity: string | null;
   finish: string | null;
   openTimeProfile: string | null;
-  notes: string;
+  notes: string | null;
 };
 
 export type Pigment = {
   id: string;
-  code: string;
+  code: string | null;
   slug: string;
-  colorFamily: string;
-  status: string;
-  fullName?: string;
-  ciName?: string;
-  organicOrInorganic?: string;
-  origin?: string;
-  notes?: string;
+  colorFamily: string | null;
+  status: string | null;
+  fullName?: string | null;
+  ciName?: string | null;
+  organicOrInorganic?: string | null;
+  origin?: string | null;
+  notes?: string | null;
 };
 
 export type PaintBehavior = {
@@ -63,389 +65,102 @@ export type PaintBehavior = {
   finish: string | null;
   viscosity: string | null;
   openTimeProfile: string | null;
-  behaviorSource: string;
+  behaviorSource: string | null;
 };
 
 export type Measurement = {
-  type: string;
+  type: string | null;
   density: number | null;
   rgb: {
-    red: number;
-    green: number;
-    blue: number;
+    red: number | null;
+    green: number | null;
+    blue: number | null;
   } | null;
-  method: string;
-  sourceUrl: string;
+  method: string | null;
+  sourceUrl: string | null;
 };
 
 export type Paint = {
   id: string;
-  brandId: string;
-  mediumId: string;
-  productLineId: string;
-  sourceId: string;
-  name: string;
+  brandId: string | null;
+  mediumId: string | null;
+  productLineId: string | null;
+  sourceId: string | null;
+  name: string | null;
   slug: string;
-  canonicalKey: string;
-  colorFamily: string;
+  canonicalKey: string | null;
+  colorFamily: string | null;
   pigmentCodes: string[];
   pigmentCount: number;
   singlePigment: boolean;
-  verificationStatus: VerificationStatus;
-  notes: string;
+  verificationStatus: VerificationStatus | string | null;
+  notes: string | null;
   behavior: PaintBehavior;
   measurement: Measurement | null;
 };
 
-export const sources: Source[] = [
-  {
-    id: "S001",
-    name: "Sensual Logic Artist Color Data",
-    type: "Measured Paint Dataset",
-    url: "https://sensuallogic.com/artistcolordata",
-    reliabilityRole: "Measured RGB data / source table",
-    notes: "Source page states RGB values are measured with a spectrophotometer."
-  },
-  {
-    id: "S002",
-    name: "Winsor And Newton Professional Acrylic Colour Chart PDF",
-    type: "Official Manufacturer Colour Chart",
-    url: "https://www.winsornewton.com",
-    reliabilityRole: "Official manufacturer product-line source",
-    notes: "Useful for official series, permanence, and line-specific validation."
-  }
-];
+type NormalizedWorkbook = typeof workbookData;
 
-export const brands: Brand[] = [
-  {
-    id: "B001",
-    name: "Winsor And Newton",
-    slug: "winsor-and-newton",
-    manufacturer: "Colart",
-    synonyms: ["Winsor & Newton", "W&N"],
-    notes: "Canonical brand name uses And instead of ampersand."
-  }
-];
+const workbook = workbookData as NormalizedWorkbook;
+const rawEntities = workbook.entities;
 
-export const mediums: Medium[] = [
-  {
-    id: "M001",
-    name: "Oil",
-    slug: "oil",
-    parentCategory: "Oil Based",
-    coreBehaviorNotes: "Traditional oil paint."
-  },
-  {
-    id: "M002",
-    name: "Gouache",
-    slug: "gouache",
-    parentCategory: "Water Based",
-    coreBehaviorNotes: "Opaque water-based paint."
-  },
-  {
-    id: "M003",
-    name: "Acrylic",
-    slug: "acrylic",
-    parentCategory: "Water Based",
-    coreBehaviorNotes: "Acrylic polymer paint."
-  }
-];
+const behaviorByPaintId = new Map(rawEntities.paintBehavior.map((entry) => [entry.paintId, entry]));
+const measurementByPaintId = new Map(rawEntities.measurements.map((entry) => [entry.paintId, entry]));
 
-export const productLines: ProductLine[] = [
-  {
-    id: "PL001",
-    brandId: "B001",
-    mediumId: "M001",
-    name: "Artists Oil",
-    slug: "winsor-and-newton-artists-oil",
-    formulationFamily: "Artists Oil",
-    productLineType: "Artist Oil",
-    viscosity: null,
-    finish: null,
-    openTimeProfile: null,
-    notes: "Traditional Winsor And Newton artist oil line."
-  },
-  {
-    id: "PL002",
-    brandId: "B001",
-    mediumId: "M002",
-    name: "Designers Gouache",
-    slug: "winsor-and-newton-designers-gouache",
-    formulationFamily: "Designers Gouache",
-    productLineType: "Designer Gouache",
-    viscosity: null,
-    finish: "Matte",
-    openTimeProfile: null,
-    notes: "Opaque water-based gouache line."
-  },
-  {
-    id: "PL003",
-    brandId: "B001",
-    mediumId: "M003",
-    name: "Galeria Acrylic",
-    slug: "winsor-and-newton-galeria-acrylic",
-    formulationFamily: "Galeria Acrylic",
-    productLineType: "Student Acrylic",
-    viscosity: null,
-    finish: null,
-    openTimeProfile: null,
-    notes: "Student acrylic line."
-  },
-  {
-    id: "PL004",
-    brandId: "B001",
-    mediumId: "M003",
-    name: "Professional Acrylic",
-    slug: "winsor-and-newton-professional-acrylic",
-    formulationFamily: "Professional Acrylic",
-    productLineType: "Artist Acrylic",
-    viscosity: null,
-    finish: null,
-    openTimeProfile: null,
-    notes: "Professional acrylic line."
-  }
-];
+export const sources: Source[] = rawEntities.sources;
+export const brands: Brand[] = rawEntities.brands;
+export const mediums: Medium[] = rawEntities.mediums;
+export const productLines: ProductLine[] = rawEntities.productLines;
+export const pigments: Pigment[] = rawEntities.pigments;
 
-export const pigments: Pigment[] = [
-  {
-    id: "PIG000032",
-    code: "PR",
-    slug: "pr",
-    colorFamily: "Red",
-    status: "Needs Review",
-    notes: "Imported from source as incomplete code and should be validated."
-  },
-  {
-    id: "PIG000033",
-    code: "PR101",
-    slug: "pr101",
-    colorFamily: "Orange",
-    status: "Valid",
-    notes: "Synthetic iron oxide."
-  },
-  {
-    id: "PIG000046",
-    code: "PR83",
-    slug: "pr83",
-    colorFamily: "Red",
-    status: "Valid",
-    notes: "Traditional alizarin crimson pigment code."
-  },
-  {
-    id: "PIG000066",
-    code: "PY184",
-    slug: "py184",
-    colorFamily: "Yellow",
-    status: "Valid",
-    notes: "Bismuth vanadate yellow."
-  },
-  {
-    id: "PIG000068",
-    code: "PY35",
-    slug: "py35",
-    colorFamily: "Yellow",
-    status: "Valid",
-    notes: "Cadmium yellow pigment family."
-  }
-];
+export const paints: Paint[] = rawEntities.paints.map((paint) => {
+  const behavior = behaviorByPaintId.get(paint.id);
+  const measurement = measurementByPaintId.get(paint.id);
 
-export const paints: Paint[] = [
-  {
-    id: "PNT000001",
-    brandId: "B001",
-    mediumId: "M001",
-    productLineId: "PL001",
-    sourceId: "S001",
-    name: "Alizarin Crimson",
-    slug: "alizarin-crimson",
-    canonicalKey: "winsor and newton|oil|artists oil|alizarin crimson",
-    colorFamily: "Red",
-    pigmentCodes: ["PR83"],
-    pigmentCount: 1,
-    singlePigment: true,
-    verificationStatus: "Needs Review",
-    notes: "Relational paint product record imported from workbook.",
+  return {
+    id: paint.id,
+    brandId: paint.brandId,
+    mediumId: paint.mediumId,
+    productLineId: paint.productLineId,
+    sourceId: paint.sourceId,
+    name: paint.name,
+    slug: paint.slug,
+    canonicalKey: paint.canonicalKey,
+    colorFamily: paint.colorFamily,
+    pigmentCodes: paint.pigmentCodes,
+    pigmentCount: paint.pigmentCount,
+    singlePigment: paint.singlePigment,
+    verificationStatus: paint.verificationStatus,
+    notes: paint.notes,
     behavior: {
-      transparency: null,
-      opacityCode: "T",
-      permanence: "B",
-      granulation: null,
-      staining: null,
-      temperature: null,
-      finish: null,
-      viscosity: null,
-      openTimeProfile: null,
-      behaviorSource: "Sensual Logic"
+      transparency: behavior?.transparency ?? null,
+      opacityCode: behavior?.opacityCode ?? null,
+      permanence: behavior?.permanence ?? null,
+      granulation: behavior?.granulation ?? null,
+      staining: behavior?.staining ?? null,
+      temperature: behavior?.temperature ?? null,
+      finish: behavior?.finish ?? null,
+      viscosity: behavior?.viscosity ?? null,
+      openTimeProfile: behavior?.openTimeProfile ?? null,
+      behaviorSource: behavior?.behaviorSource ?? null
     },
-    measurement: {
-      type: "Mass Tone RGB",
-      density: 1045,
-      rgb: {
-        red: 68,
-        green: 2,
-        blue: 6
-      },
-      method: "Spectrophotometer measured per source page",
-      sourceUrl: "https://sensuallogic.com/artistcolordata"
-    }
-  },
-  {
-    id: "PNT000002",
-    brandId: "B001",
-    mediumId: "M001",
-    productLineId: "PL001",
-    sourceId: "S001",
-    name: "Bismuth Yellow",
-    slug: "bismuth-yellow",
-    canonicalKey: "winsor and newton|oil|artists oil|bismuth yellow",
-    colorFamily: "Yellow",
-    pigmentCodes: ["PY184"],
-    pigmentCount: 1,
-    singlePigment: true,
-    verificationStatus: "Needs Review",
-    notes: "Relational paint product record imported from workbook.",
-    behavior: {
-      transparency: null,
-      opacityCode: "O",
-      permanence: "A",
-      granulation: null,
-      staining: null,
-      temperature: null,
-      finish: null,
-      viscosity: null,
-      openTimeProfile: null,
-      behaviorSource: "Sensual Logic"
-    },
-    measurement: {
-      type: "Mass Tone RGB",
-      density: 1684,
-      rgb: {
-        red: 255,
-        green: 232,
-        blue: 0
-      },
-      method: "Spectrophotometer measured per source page",
-      sourceUrl: "https://sensuallogic.com/artistcolordata"
-    }
-  },
-  {
-    id: "PNT000003",
-    brandId: "B001",
-    mediumId: "M001",
-    productLineId: "PL001",
-    sourceId: "S001",
-    name: "Bright Red",
-    slug: "bright-red",
-    canonicalKey: "winsor and newton|oil|artists oil|bright red",
-    colorFamily: "Red",
-    pigmentCodes: ["PR"],
-    pigmentCount: 1,
-    singlePigment: true,
-    verificationStatus: "Needs Review",
-    notes: "Pigment code appears incomplete in the source and should be reviewed.",
-    behavior: {
-      transparency: null,
-      opacityCode: "T",
-      permanence: "A",
-      granulation: null,
-      staining: null,
-      temperature: null,
-      finish: null,
-      viscosity: null,
-      openTimeProfile: null,
-      behaviorSource: "Sensual Logic"
-    },
-    measurement: {
-      type: "Mass Tone RGB",
-      density: 1784,
-      rgb: {
-        red: 197,
-        green: 0,
-        blue: 15
-      },
-      method: "Spectrophotometer measured per source page",
-      sourceUrl: "https://sensuallogic.com/artistcolordata"
-    }
-  },
-  {
-    id: "PNT000004",
-    brandId: "B001",
-    mediumId: "M001",
-    productLineId: "PL001",
-    sourceId: "S001",
-    name: "Burnt Sienna",
-    slug: "burnt-sienna",
-    canonicalKey: "winsor and newton|oil|artists oil|burnt sienna",
-    colorFamily: "Orange",
-    pigmentCodes: ["PR101"],
-    pigmentCount: 1,
-    singlePigment: true,
-    verificationStatus: "Needs Review",
-    notes: "Relational paint product record imported from workbook.",
-    behavior: {
-      transparency: null,
-      opacityCode: "T",
-      permanence: "AA",
-      granulation: null,
-      staining: null,
-      temperature: null,
-      finish: null,
-      viscosity: null,
-      openTimeProfile: null,
-      behaviorSource: "Sensual Logic"
-    },
-    measurement: {
-      type: "Mass Tone RGB",
-      density: 1181,
-      rgb: {
-        red: 82,
-        green: 42,
-        blue: 31
-      },
-      method: "Spectrophotometer measured per source page",
-      sourceUrl: "https://sensuallogic.com/artistcolordata"
-    }
-  },
-  {
-    id: "PNT000005",
-    brandId: "B001",
-    mediumId: "M001",
-    productLineId: "PL001",
-    sourceId: "S001",
-    name: "Cadmium Lemon",
-    slug: "cadmium-lemon",
-    canonicalKey: "winsor and newton|oil|artists oil|cadmium lemon",
-    colorFamily: "Yellow",
-    pigmentCodes: ["PY35"],
-    pigmentCount: 1,
-    singlePigment: true,
-    verificationStatus: "Needs Review",
-    notes: "Relational paint product record imported from workbook.",
-    behavior: {
-      transparency: null,
-      opacityCode: "O",
-      permanence: "A",
-      granulation: null,
-      staining: null,
-      temperature: null,
-      finish: null,
-      viscosity: null,
-      openTimeProfile: null,
-      behaviorSource: "Sensual Logic"
-    },
-    measurement: {
-      type: "Mass Tone RGB",
-      density: 2166,
-      rgb: {
-        red: 255,
-        green: 222,
-        blue: 0
-      },
-      method: "Spectrophotometer measured per source page",
-      sourceUrl: "https://sensuallogic.com/artistcolordata"
-    }
-  }
-];
+    measurement: measurement
+      ? {
+          type: measurement.measurementType ?? null,
+          density: measurement.density ?? null,
+          rgb: measurement.rgb
+            ? {
+                red: measurement.rgb.red ?? null,
+                green: measurement.rgb.green ?? null,
+                blue: measurement.rgb.blue ?? null
+              }
+            : null,
+          method: measurement.measurementMethod ?? null,
+          sourceUrl: measurement.sourceUrl ?? null
+        }
+      : null
+  };
+});
 
 export const stats = [
   {
@@ -453,16 +168,16 @@ export const stats = [
     value: "v15"
   },
   {
-    label: "Starter paints",
-    value: String(paints.length)
+    label: "Imported paints",
+    value: String(workbook.rowCounts.paints)
   },
   {
-    label: "Mediums modeled",
-    value: String(mediums.length)
+    label: "Pigments modeled",
+    value: String(workbook.rowCounts.pigments)
   },
   {
     label: "Product lines modeled",
-    value: String(productLines.length)
+    value: String(workbook.rowCounts.productLines)
   }
 ];
 
@@ -476,15 +191,15 @@ export type BrowseFilters = {
   permanence?: string;
 };
 
-export function getBrandById(brandId: string) {
+export function getBrandById(brandId: string | null) {
   return brands.find((brand) => brand.id === brandId);
 }
 
-export function getMediumById(mediumId: string) {
+export function getMediumById(mediumId: string | null) {
   return mediums.find((medium) => medium.id === mediumId);
 }
 
-export function getProductLineById(productLineId: string) {
+export function getProductLineById(productLineId: string | null) {
   return productLines.find((productLine) => productLine.id === productLineId);
 }
 
@@ -528,7 +243,7 @@ export function filterPaints(filters: BrowseFilters) {
       return false;
     }
 
-    if (filters.colorFamily && paint.colorFamily.toLowerCase() !== filters.colorFamily.toLowerCase()) {
+    if (filters.colorFamily && paint.colorFamily?.toLowerCase() !== filters.colorFamily.toLowerCase()) {
       return false;
     }
 
@@ -545,7 +260,7 @@ export function filterPaints(filters: BrowseFilters) {
 }
 
 export function rgbToCss(rgb: Measurement["rgb"]) {
-  if (!rgb) {
+  if (!rgb || rgb.red == null || rgb.green == null || rgb.blue == null) {
     return "linear-gradient(135deg, #d7c7a4, #8c7654)";
   }
 
@@ -553,7 +268,7 @@ export function rgbToCss(rgb: Measurement["rgb"]) {
 }
 
 export function uniqueColorFamilies() {
-  return [...new Set(paints.map((paint) => paint.colorFamily))].sort();
+  return [...new Set(paints.map((paint) => paint.colorFamily).filter(Boolean) as string[])].sort();
 }
 
 export function uniqueOpacityCodes() {
