@@ -14,8 +14,8 @@ export default function HomePage() {
           <div className="eyebrow">Built for painters, not spreadsheets</div>
           <h1>Find the real story behind a paint color.</h1>
           <p className="lede">
-            ChromaCodex is a web-first color database for artists that separates paint name, pigment identity, product line behavior, and
-            source reliability into something you can actually read.
+            ChromaCodex is an artist color app that brings pigment codes, brand comparisons, paint behavior, and practical painting guidance
+            into one clear, easy-to-read place.
           </p>
           <div className="hero-actions">
             <Link className="button" href="/browse">
