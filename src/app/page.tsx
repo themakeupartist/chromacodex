@@ -17,6 +17,12 @@ export default function HomePage() {
             ChromaCodex is an artist color app that brings pigment codes, brand comparisons, paint behavior, and practical painting guidance
             into one clear, easy-to-read place.
           </p>
+          <p className="muted">
+            Where other tools are often fragmented, hard to navigate, limited to one medium, or focused only on raw data, ChromaCodex is
+            designed to help artists not just find information, but use it. By combining trusted paint data with readable explanations and
+            future AI-driven studio guidance, ChromaCodex helps artists compare brands, understand pigments, and solve real painting problems
+            like glow, reflected light, glazing, and color choice from a single source.
+          </p>
           <div className="hero-actions">
             <Link className="button" href="/browse">
               Browse imported paints
